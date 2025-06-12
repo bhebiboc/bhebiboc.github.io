@@ -12,9 +12,28 @@
       overflow: hidden;
       background: #f9f9f9;
     }
+    #start-screen {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      z-index: 10;
+    }
+    #start-screen h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    #start-screen button {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
     #game {
       position: relative;
       width: 100%; height: 100%;
+      display: none;
     }
     #point-display {
       position: absolute;
@@ -79,6 +98,10 @@
   </style>
 </head>
 <body>
+<div id="start-screen">
+  <h1>포인트를 최대한 많이 받으세요!</h1>
+  <button onclick="startGame()">시작</button>
+</div>
 <div id="game">
   <div id="point-display">포인트: 0</div>
   <button class="game-button" id="btn1"></button>
@@ -148,31 +171,36 @@
     setTimeout(() => float.remove(), 1000);
   }
 
-  let duration = 20;
-  let interval = setInterval(() => {
-    if (duration <= 0) {
-      clearInterval(interval);
-      pointDisplay.style.display = 'none';
-      let html = `<h2>게임 종료!</h2><p>최종 포인트: ${point}</p>`;
-      html += `<h3>버튼 상호작용</h3><ul>`;
-      for (let key in buttonInteractions) {
-        html += `<li>${key}: ${buttonInteractions[key]}회</li>`;
+  function startGame() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    let duration = 20;
+    let interval = setInterval(() => {
+      if (duration <= 0) {
+        clearInterval(interval);
+        pointDisplay.style.display = 'none';
+        let html = `<h2>게임 종료!</h2><p>최종 포인트: ${point}</p>`;
+        html += `<h3>버튼 상호작용</h3><ul>`;
+        for (let key in buttonInteractions) {
+          html += `<li>${key}: ${buttonInteractions[key]}회</li>`;
+        }
+        html += `</ul><h3>슬라이더 상호작용</h3><ul>`;
+        for (let key in sliderInteractions) {
+          html += `<li>${key}: ${sliderInteractions[key]}회</li>`;
+        }
+        html += `</ul>`;
+        resultScreen.innerHTML = html;
+        resultScreen.style.display = 'flex';
+        return;
       }
-      html += `</ul><h3>슬라이더 상호작용</h3><ul>`;
-      for (let key in sliderInteractions) {
-        html += `<li>${key}: ${sliderInteractions[key]}회</li>`;
-      }
-      html += `</ul>`;
-      resultScreen.innerHTML = html;
-      resultScreen.style.display = 'flex';
-      return;
-    }
-    const gain = weightedRandom();
-    point += gain;
-    pointDisplay.innerText = `포인트: ${point}`;
-    if (gain > 0) showFloatText(gain);
-    duration--;
-  }, 1000);
+      const gain = weightedRandom();
+      point += gain;
+      pointDisplay.innerText = `포인트: ${point}`;
+      if (gain > 0) showFloatText(gain);
+      duration--;
+    }, 1000);
+  }
 </script>
 </body>
 </html>
+
