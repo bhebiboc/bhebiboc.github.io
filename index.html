@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>포인트 게임</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      font-family: sans-serif;
+      overflow: hidden;
+      background: #f9f9f9;
+    }
+    #game {
+      position: relative;
+      width: 100%; height: 100%;
+    }
+    #point-display {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .game-button {
+      position: absolute;
+      width: 80px; height: 80px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: none;
+      background-image: url(''); /* PNG 디자인 경로 설정 */
+      transition: transform 0.1s ease;
+    }
+    .game-button:active {
+      transform: scale(0.9);
+    }
+    .game-slider {
+      position: absolute;
+      width: 150px;
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    .game-slider::-webkit-slider-runnable-track {
+      height: 12px;
+      background: url(''); /* PNG 슬라이더 트랙 경로 */
+      background-size: cover;
+    }
+    .game-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 30px; height: 30px;
+      background: url(''); /* PNG 슬라이더 버튼 경로 */
+      background-size: cover;
+      margin-top: -9px;
+    }
+    .point-float {
+      position: absolute;
+      color: green;
+      font-weight: bold;
+      animation: floatUp 1s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+    #result-screen {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.95);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+<div id="game">
+  <div id="point-display">포인트: 0</div>
+  <button class="game-button" id="btn1"></button>
+  <button class="game-button" id="btn2"></button>
+  <button class="game-button" id="btn3"></button>
+  <input type="range" min="0" max="100" class="game-slider" id="slider1" />
+  <input type="range" min="0" max="100" class="game-slider" id="slider2" />
+  <div id="result-screen"></div>
+</div>
+<script>
+  const pointDisplay = document.getElementById('point-display');
+  const resultScreen = document.getElementById('result-screen');
+
+  const buttons = ["btn1", "btn2", "btn3"].map(id => document.getElementById(id));
+  const sliders = ["slider1", "slider2"].map(id => document.getElementById(id));
+
+  let point = 0;
+  let buttonInteractions = { btn1: 0, btn2: 0, btn3: 0 };
+  let sliderInteractions = { slider1: 0, slider2: 0 };
+
+  function randomPosition(el) {
+    const game = document.getElementById('game');
+    const maxX = game.clientWidth - el.offsetWidth;
+    const maxY = game.clientHeight - el.offsetHeight;
+    el.style.left = Math.random() * maxX + 'px';
+    el.style.top = (Math.random() * (maxY - 100) + 100) + 'px';
+  }
+
+  buttons.forEach(btn => {
+    randomPosition(btn);
+    btn.addEventListener('click', () => {
+      point += 0; // 기본적으로 포인트는 시간 기반으로 증가
+      buttonInteractions[btn.id]++;
+    });
+  });
+
+  sliders.forEach(slider => {
+    randomPosition(slider);
+    let lastValue = slider.value;
+    slider.addEventListener('input', () => {
+      if (Math.abs(slider.value - lastValue) >= 5) {
+        sliderInteractions[slider.id]++;
+        lastValue = slider.value;
+      }
+    });
+  });
+
+  function weightedRandom() {
+    const values = [0,1,2,3,4,5,6];
+    const weights = [30, 25, 20, 12, 8, 4, 1];
+    const total = weights.reduce((a,b) => a+b);
+    let r = Math.random() * total;
+    for (let i=0; i<values.length; i++) {
+      if (r < weights[i]) return values[i];
+      r -= weights[i];
+    }
+    return 0;
+  }
+
+  function showFloatText(amount) {
+    const float = document.createElement('div');
+    float.className = 'point-float';
+    float.innerText = `+${amount}`;
+    float.style.left = Math.random() * window.innerWidth + 'px';
+    float.style.top = Math.random() * window.innerHeight + 'px';
+    document.body.appendChild(float);
+    setTimeout(() => float.remove(), 1000);
+  }
+
+  let duration = 20;
+  let interval = setInterval(() => {
+    if (duration <= 0) {
+      clearInterval(interval);
+      pointDisplay.style.display = 'none';
+      let html = `<h2>게임 종료!</h2><p>최종 포인트: ${point}</p>`;
+      html += `<h3>버튼 상호작용</h3><ul>`;
+      for (let key in buttonInteractions) {
+        html += `<li>${key}: ${buttonInteractions[key]}회</li>`;
+      }
+      html += `</ul><h3>슬라이더 상호작용</h3><ul>`;
+      for (let key in sliderInteractions) {
+        html += `<li>${key}: ${sliderInteractions[key]}회</li>`;
+      }
+      html += `</ul>`;
+      resultScreen.innerHTML = html;
+      resultScreen.style.display = 'flex';
+      return;
+    }
+    const gain = weightedRandom();
+    point += gain;
+    pointDisplay.innerText = `포인트: ${point}`;
+    if (gain > 0) showFloatText(gain);
+    duration--;
+  }, 1000);
+</script>
+</body>
+</html>
