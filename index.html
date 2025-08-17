@@ -6,58 +6,13 @@
     <title>메신저 앱</title>
     <meta name="description" content="안드로이드 전용 APK 다운로드 페이지" />
     <style>
-      :root {
-        --bg: #0f172a;    /* slate-900 */
-        --panel: #111827; /* gray-900 */
-        --text: #e5e7eb;  /* gray-200 */
-        --muted: #9ca3af; /* gray-400 */
-        --accent: #3b82f6;/* blue-500 */
-      }
-      * { box-sizing: border-box; }
-      html, body { height: 100%; }
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Apple SD Gothic Neo, \B3CB\C6C0, Arial, sans-serif;
-        background: radial-gradient(1000px 600px at 50% -10%, rgba(59,130,246,.12), transparent 60%), var(--bg);
-        color: var(--text);
-        display: grid;
-        place-items: center;
-        padding: 24px;
-      }
-      main {
-        width: 100%;
-        max-width: 560px;
-        background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-        border: 1px solid rgba(255,255,255,.06);
-        border-radius: 20px;
-        padding: 32px 28px;
-        box-shadow: 0 10px 30px rgba(0,0,0,.4);
-      }
-      h1 {
-        margin: 0 0 8px 0;
-        font-size: 28px;
-        letter-spacing: -0.02em;
-      }
-      p {
-        margin: 0 0 20px 0;
-        color: var(--muted);
-        line-height: 1.6;
-      }
-      .btn {
-        display: inline-block;
-        padding: 14px 18px;
-        border-radius: 14px;
-        background: var(--accent);
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        transition: transform .06s ease, filter .2s ease;
-        box-shadow: 0 8px 18px rgba(59,130,246,.35);
-      }
-      .btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
-      .btn:active { transform: translateY(1px); }
-      footer { margin-top: 18px; font-size: 12px; color: var(--muted); }
-      code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      body{margin:0;display:grid;place-items:center;min-height:100dvh;background:#0f172a;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;padding:24px}
+      main{width:100%;max-width:560px;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;background:rgba(255,255,255,.03)}
+      h1{margin:0 0 8px 0;font-size:24px}
+      p{margin:0 0 18px 0;color:#9ca3af}
+      .btn{display:inline-block;padding:14px 18px;border-radius:12px;background:#3b82f6;color:#fff;text-decoration:none;font-weight:700}
+      .btn:active{transform:translateY(1px)}
+      footer{margin-top:14px;font-size:12px;color:#9ca3af}
     </style>
   </head>
   <body>
@@ -65,40 +20,18 @@
       <h1>메신저 앱</h1>
       <p>아래 버튼을 눌러 다운로드를 시작하세요. 안드로이드 전용 apk파일입니다.</p>
 
-      <!--
-        파일 선택 방법
-        1) 리포지토리(또는 gh-pages 브랜치) 루트에 APK를 업로드하고 파일명을 app-release.apk 로 두면 아래 기본 링크로 작동합니다.
-        2) 다른 경로/파일명을 쓰려면, a#downloadBtn 의 href 만 수정하세요.
-        3) 또는 URL에 ?file=경로 를 붙여 일시적으로 바꿀 수 있습니다. 예: https://user.github.io/repo/?file=releases/app-v2.apk
-      -->
-
+      <!-- 아래 USER/REPO만 본인 저장소에 맞게 바꾸세요. 태그는 v1, 파일명은 app-release.apk로 설정되어 있습니다. -->
       <a
-        id="downloadBtn"
         class="btn"
-        href="./app-release.apk"
+        href="https://github.com/bhebiboc/bhebiboc.github.io/releases/download/v1/app-release.apk"
+        target="_blank" rel="noopener"
         download="app-release.apk"
-        rel="noopener"
         aria-label="app-release.apk 다운로드"
       >app-release.apk</a>
 
-      <footer>
-        <span>GitHub Pages 정적 호스팅 · APK를 교체/경로 변경하여 배포하세요.</span>
-      </footer>
+      <footer>GitHub Releases 자산을 직접 링크합니다.</footer>
     </main>
-
-    <script>
-      // 선택 사항: URL에 ?file=경로 를 주면 링크 대상만 바꿉니다. (버튼 문구는 요구사항대로 그대로 둡니다.)
-      (function () {
-        const params = new URLSearchParams(window.location.search);
-        const file = params.get('file');
-        if (file) {
-          const btn = document.getElementById('downloadBtn');
-          btn.href = file;
-          const suggestedName = file.split('/').pop();
-          if (suggestedName) btn.setAttribute('download', suggestedName);
-        }
-      })();
-    </script>
   </body>
 </html>
+
 
